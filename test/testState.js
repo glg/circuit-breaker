@@ -11,6 +11,14 @@ describe('#State',function(){
             expect(state.getStatus('test_circuit_breaker')).to.equal('CLOSED')
         })
     })
+    describe('#exists',function(){
+        it('should return true if the circuit breaker has been initialized', function(){
+            expect(state.exists('test_circuit_breaker')).to.be.true
+        })
+        it('should return false if the circuit breaker has NOT been initialized', function(){
+            expect(state.exists('non-existent-breaker')).to.be.false
+        })
+    })
     describe('#setStatus', function(){
         it('should set the status of the circuit breaker', function(){
             expect(state.getStatus('test_circuit_breaker')).to.equal('CLOSED')

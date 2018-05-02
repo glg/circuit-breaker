@@ -26,6 +26,14 @@ describe("Store", function(){
             expect(config).to.equal(default_config)
         })
     })
+    describe('#exists',function(){
+        it('should return true if the circuit breaker has been initialized', function(){
+            expect(store.exists('test_circuit_breaker')).to.be.true
+        })
+        it('should return false if the circuit breaker has NOT been initialized', function(){
+            expect(store.exists('non-existent-breaker')).to.be.false
+        })
+    })
     describe('#getConfig', function(){
         it('should return the configuration set when store is initialized', function(){
             var config = store.getConfig('test_circuit_breaker') 

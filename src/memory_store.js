@@ -22,6 +22,11 @@ const store = {
             }
         self.cb_state.set(cb_name, initState )
     },
+    exists: function(cb_name){
+        var self = this
+        var cb_state = self.cb_state.get(cb_name)
+        return cb_state != null && cb_state != undefined
+    },
     getConfig:function(cb_name){
         var self = this
         return self.cb_state.get(cb_name).config

@@ -14,11 +14,6 @@ var mock_dependency = {
 }
 describe('#breaker',function(){
     var fail_breaker, succeed_breaker
-    beforeEach(function(){
-        fail_breaker     = CB.factory('err_method',mock_dependency, mock_dependency.fail, config )
-        succeed_breaker  = CB.factory('succeed_method',mock_dependency, mock_dependency.succeed, config )
-
-    })
     describe('#execute', function(){
         it('should call the original callback supplying the null error and result if successfule', function(done){
             var x = 3, y = 5
@@ -27,9 +22,11 @@ describe('#breaker',function(){
                 expect(result).to.be.equal(15)
                 done()
             }
+            succeed_breaker  = CB.factory('succeed_method',mock_dependency, mock_dependency.succeed, config )
             succeed_breaker.execute(x,y,callback)
         })
         it('should call original callback supplying non null error and null result when call fails',function(done){
+            fail_breaker     = CB.factory('err_method_A',mock_dependency, mock_dependency.fail, config )
             var x = 3, y = 5
             var closed_callback = function(err, result ){
                 // do nothing
@@ -53,6 +50,8 @@ describe('#breaker',function(){
                 expect(result).to.be.null
                 done()
             }
+            fail_breaker     = CB.factory('err_method_B',mock_dependency, mock_dependency.fail, config )
+
             fail_breaker.execute(x,y,callback)
 
         })
@@ -70,6 +69,8 @@ describe('#breaker',function(){
             var x = 3, y = 5, status
             var callback = function(err, result ){
             }
+            fail_breaker     = CB.factory('err_method_D',mock_dependency, mock_dependency.fail, config )
+
             // fail breaker should be open after one more than threshold fails
             // shoudl be closed before more than threshold fails reached 
             for (var i = 1; i <= config.threshold +1 ; i++ ){
@@ -83,7 +84,7 @@ describe('#breaker',function(){
 
         it('should not call the wrapped funciton after if the CB is open', function(){
             var spy = sinon.spy(mock_dependency,"fail")
-            var breaker = CB.factory('fail_breaker',mock_dependency,mock_dependency.fail, config)
+            var breaker = CB.factory('fail_breaker_G',mock_dependency,mock_dependency.fail, config)
             
             for(var i = 0; i < config.threshold +30; i++ ){
                 breaker.execute(1,2,function(){})                
@@ -91,7 +92,18 @@ describe('#breaker',function(){
             // only call the number of times it is allowed to fail
             expect(spy.getCalls().length).to.equal(config.threshold)
         })
-
+        it('should track state for breaker by name when it is recreated with the same name', function(){
+            var x = 3, y = 5, status
+            var callback = function(err, result ){
+            }
+            var renewed_fail_breaker = CB.factory('renewed_fail_breaker',mock_dependency,mock_dependency.fail, config)
+            // fail breaker should be open after one more than threshold fails
+            for (var i = 1; i <= config.threshold +1 ; i++ ){
+                status = renewed_fail_breaker.execute(x,y,callback)                
+            }            
+            // should be open because if failed more then threshold times
+            expect(status).to.equal(STATUSES.OPEN)
+        })
         
     })
 })

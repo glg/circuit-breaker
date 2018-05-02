@@ -19,6 +19,12 @@ const state = {
         self.store.init(cb_name, config)
         
     },
+    
+    exists:function(cb_name){
+        var self = this
+        return self.store.exists(cb_name)
+    },
+
     getStatus: function(cb_name){
         var self    = this        
         return self.store.getStatus(cb_name)

@@ -35,8 +35,9 @@ var MethodBreaker = function(name, object, method,config){
     this.context = object
     this.method = method
     this.config = config
-    state.init(name, config)
-    
+    if(!state.exists(name)){
+        state.init(name, config)
+    }
 }
 
 // Wrapped method must have signiture:
