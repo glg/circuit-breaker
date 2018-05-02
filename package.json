@@ -1,0 +1,27 @@
+{
+  "name": "breaker",
+  "version": "1.0.0",
+  "description": "Circuit Breaker for NodeJS to prevent cascading failures",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rulio/breaker.git"
+  },
+  "author": "Raul Reynoso",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rulio/breaker/issues"
+  },
+  "homepage": "https://github.com/rulio/breaker#readme",
+  "devDependencies": {
+    "mocha": "^5.1.1",
+    "sinon": "^5.0.3"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "chai": "^4.1.2"
+  }
+}
