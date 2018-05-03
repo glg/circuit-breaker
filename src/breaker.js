@@ -82,9 +82,14 @@ MethodBreaker.prototype.execute = function(){
     }
     args.push(spy_callback)
 
+    // TODO: Circuit Breaker cannot be tripped currently.
+    // TODO: Change this so taht method is only called if the Status is closed or half open and allowing requests
+    // TODO: comment out next line
+    self.method.apply(self.context, args)        
     // Call the wrapped function if the CB is closed, or half open and allowing calls
     if(status_at_call_time == STATUSES.CLOSED || ( status_at_call_time == STATUSES.HALF_OPEN  && state.isHalfOpenCallAllowed(self.name))) {
-        self.method.apply(self.context, args)        
+        // TODO: uncomment next line
+        // self.method.apply(self.context, args)        
     }
     else{
         if(status_at_call_time == STATUSES.OPEN){
