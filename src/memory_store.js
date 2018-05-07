@@ -24,12 +24,12 @@ const store = {
     },
     exists: function(cb_name){
         var self = this
-        var cb_state = self.cb_state.get(cb_name)
+        var cb_state = self.getState(cb_name)
         return cb_state != null && cb_state != undefined
     },
     getConfig:function(cb_name){
         var self = this
-        return self.cb_state.get(cb_name).config
+        return self.getState(cb_name).config
     },
     getState:function(cb_name){
         var self = this
@@ -42,7 +42,7 @@ const store = {
     },
     setStatus:function (cb_name, status){
         var self = this        
-        var state = self.cb_state.get(cb_name)
+        var state = self.getState(cb_name)
         // reset tracking of half open calls and last updated time
         // Every time that the CB status is changed            
         state.last_updated_at = self.getCurrentSecond()        
@@ -63,7 +63,7 @@ const store = {
         var current_second = self.getCurrentSecond()
 
         // Increment the counter for the given circuit breaker
-        var cb_state    = self.cb_state.get(cb_name)
+        var cb_state    = self.getState(cb_name)
         var count       = cb_state.errors.get(current_second) || 0            
         cb_state.errors.set(current_second, count +1 )                        
     },     
@@ -94,17 +94,17 @@ const store = {
     },
     incrementHalfOpenCalls:function(cb_name){
         var self = this
-        var cb_state = self.cb_state.get(cb_name)
+        var cb_state = self.getState(cb_name)
         cb_state.half_open_calls++
     },
     getHalfOpenCalls: function(cb_name){
         var self = this
-        var cb_state = self.cb_state.get(cb_name)
+        var cb_state = self.getState(cb_name)
         return cb_state.half_open_calls
     },
     resetHalfOpenCalls:function(cb_name){
         var self = this
-        var cb_state = self.cb_state.get(cb_name)
+        var cb_state = self.getState(cb_name)
         cb_state.half_open_calls = 0
     },
     getCurrentSecond:function(){
