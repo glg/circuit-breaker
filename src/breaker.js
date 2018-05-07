@@ -56,8 +56,8 @@ MethodBreaker.prototype.execute = function(){
     
     // If the CB is open but has timed out.  Change the CB to half open to allow one call through
     if(status_at_call_time == STATUSES.OPEN && state.isCircuitBreakerTimedout(self.name)){
-        state.setStatus(STATUSES.HALF_OPEN)
-        state.incrementHalfOpenCall(self.name)
+        state.setStatus(self.name,STATUSES.HALF_OPEN)
+        state.incrementHalfOpenCalls(self.name)
         status_at_call_time = state.getStatus(self.name)
     }
 
@@ -67,7 +67,7 @@ MethodBreaker.prototype.execute = function(){
         function(){ 
             state.processResult(self.name,new Error('Cicruit Breaker Timeout'), null, status_at_call_time)            
         } 
-        , config.timeout * 1000 )
+        , config.request_timeout * 1000 )
     
     // swap out the original callback with a spy that can monitor the results.
     const spy_callback = function(err, result){
@@ -76,6 +76,7 @@ MethodBreaker.prototype.execute = function(){
         
         // Process result, count error or update CB status if needed
         state.processResult(self.name, err, result, status_at_call_time)            
+        console.log("Spy Process Result with status " + status_at_call_time)
         
         // Call original callback passed method
         original_callback(err,result)
@@ -87,7 +88,7 @@ MethodBreaker.prototype.execute = function(){
     // TODO: comment out next line
     self.method.apply(self.context, args)        
     // Call the wrapped function if the CB is closed, or half open and allowing calls
-    if(status_at_call_time == STATUSES.CLOSED || ( status_at_call_time == STATUSES.HALF_OPEN  && state.isHalfOpenCallAllowed(self.name))) {
+  /*  if(status_at_call_time == STATUSES.CLOSED || ( status_at_call_time == STATUSES.HALF_OPEN  && state.isHalfOpenCallAllowed(self.name))) {
         // TODO: uncomment next line
         // self.method.apply(self.context, args)        
     }
@@ -99,7 +100,7 @@ MethodBreaker.prototype.execute = function(){
             original_callback(new Error('Circuit Breaker Half Open'), null)
         }
             
-    }
+    }*/
     
     return status_at_call_time
     
