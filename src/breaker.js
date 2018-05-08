@@ -76,7 +76,7 @@ MethodBreaker.prototype.execute = function(){
         
         // Process result, count error or update CB status if needed
         state.processResult(self.name, err, result, status_at_call_time)            
-        console.log("Spy Process Result with status " + status_at_call_time)
+        
         
         // Call original callback passed method
         original_callback(err,result)
